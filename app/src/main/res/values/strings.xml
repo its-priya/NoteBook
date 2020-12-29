@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyNotes</string>
+    <string name="app_description">A small Description</string>
+    <string name="userName">Username</string>
+    <string name="userEmailId">User Email ID</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+</resources>
