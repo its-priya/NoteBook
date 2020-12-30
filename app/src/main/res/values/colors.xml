@@ -8,5 +8,5 @@
     <color name="primaryText">#FFFFFF</color>
     <color name="secondaryText">#AAAAAA</color>
     <color name="menuBkg">#212121</color>
-    <color name="divider"></color>
+    <color name="divider">#404040</color>
 </resources>
