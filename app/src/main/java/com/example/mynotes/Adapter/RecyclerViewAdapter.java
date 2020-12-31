@@ -9,52 +9,51 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mynotes.Model.Note;
 import com.example.mynotes.NoteDetails;
 import com.example.mynotes.R;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.util.List;
-
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    List<String> titles;
-    List<String> contents;
-    //static int[] colorCodes;
-    public RecyclerViewAdapter(List<String> titles, List<String> contents){
-        this.titles= titles;
-        this.contents= contents;
+public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder>{
+    FirestoreRecyclerOptions<Note> allNotes;
+    public RecyclerViewAdapter(@NonNull FirestoreRecyclerOptions<Note> allNotes) {
+        super(allNotes);
+        this.allNotes= allNotes;
     }
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent,false);
-        //colorCodes= parent.getResources().getIntArray(R.array.colorCodeList);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        if(titles.get(position).isEmpty())
-            holder.noteTitle.setVisibility(View.INVISIBLE);
+    protected void onBindViewHolder(@NonNull ViewHolder holder, final int position, @NonNull final Note note) {
+        if(note.getTitle().isEmpty())
+            holder.noteTitle.setVisibility(View.GONE);
         else {
             holder.noteTitle.setVisibility(View.VISIBLE);
-            holder.noteTitle.setText(titles.get(position));
+            holder.noteTitle.setText(note.getTitle());
         }
-        holder.noteContent.setText(contents.get(position));
+        if(note.getContent().isEmpty())
+            holder.noteContent.setVisibility(View.GONE);
+        else {
+            holder.noteContent.setVisibility(View.VISIBLE);
+            holder.noteContent.setText(note.getContent());
+        }
 
         holder.noteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent noteDetailsIntent= new Intent(view.getContext(), NoteDetails.class);
-                noteDetailsIntent.putExtra("title", titles.get(position));
-                noteDetailsIntent.putExtra("content", contents.get(position));
+                noteDetailsIntent.putExtra("title", note.getTitle());
+                noteDetailsIntent.putExtra("content", note.getContent());
                 view.getContext().startActivity(noteDetailsIntent);
             }
         });
     }
 
+    @NonNull
     @Override
-    public int getItemCount() {
-        return contents.size();
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent,false);
+        return new ViewHolder(view);
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView noteTitle, noteContent;

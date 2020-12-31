@@ -10,14 +10,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.mynotes.Adapter.RecyclerViewAdapter;
+import com.example.mynotes.Adapter.RecyclerViewAdapter.ViewHolder;
+import com.example.mynotes.Model.Note;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +38,8 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     SearchView searchView;
     ToggleButton toggleView;
     RecyclerView recyclerView;
-    List<String> noteTitles;
-    List<String> noteContents;
-    RecyclerViewAdapter recyclerViewAdapter;
+    FirebaseFirestore firestore;
+    FirestoreRecyclerAdapter<Note, ViewHolder> recyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         searchView= findViewById(R.id.searchView);
         recyclerView= findViewById(R.id.recyclerView);
         toggleView= findViewById(R.id.toggleView);
-        noteTitles= new ArrayList<>();
-        noteContents= new ArrayList<>();
 
         setSupportActionBar(toolbar);
         toggle= new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
@@ -54,14 +59,21 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        noteTitles.add("First Title");
-        noteContents.add("First Content");
-        noteTitles.add("Second");
-        noteContents.add("This is a note.This is a note.This is a note.");
-        noteTitles.add("This is Third Title");
-        noteContents.add("This is third note content.");
+        firestore= FirebaseFirestore.getInstance();
+        Query query= firestore.collection("notes");
+        FirestoreRecyclerOptions<Note> allNotes= new FirestoreRecyclerOptions.Builder<Note>()
+                .setQuery(query, Note.class)
+                .build();
+        recyclerViewAdapter= new RecyclerViewAdapter(allNotes);
 
-        recyclerViewAdapter= new RecyclerViewAdapter(noteTitles, noteContents);
+        FloatingActionButton addNoteFab = findViewById(R.id.addNoteFab);
+        addNoteFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(MainActivity.this, AddNote.class));
+            }
+        });
+
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         toggleView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -73,14 +85,27 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recyclerViewAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(recyclerViewAdapter!=null){
+            recyclerViewAdapter.stopListening();
+        }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
-            default:
-                Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
+            case R.id.addNote:
+                startActivity(new Intent(MainActivity.this, AddNote.class));
         }
         return true;
     }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBkg"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:padding="6dp">
 
     <androidx.appcompat.widget.Toolbar
@@ -61,8 +62,22 @@
         android:padding="1dp"
         android:scrollbars="vertical"
         android:layout_marginTop="5dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addNoteFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/divider"
+        app:maxImageSize="32dp"
+        android:elevation="5dp"
+        app:srcCompat="@drawable/ic_add"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

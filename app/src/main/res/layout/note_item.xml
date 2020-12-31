@@ -7,16 +7,14 @@
     android:background="@drawable/item_card_shape"
     android:layout_margin="5dp"
     android:orientation="vertical"
-    android:padding="6dp"
+    android:padding="8dp"
     android:id="@+id/noteLayout">
 
     <LinearLayout
-        android:id="@+id/noteHeader"
+        android:id="@+id/noteContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="5dp"
+        android:orientation="vertical"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,37 +25,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:layout_margin="4dp"
             android:text="@string/noteTitle"
             android:textAllCaps="false"
             android:textColor="@color/primaryText"
             android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_weight="1"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_more"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            android:background="@android:color/transparent"/>
-    </LinearLayout>
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/noteContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@android:color/transparent"
+            android:layout_margin="4dp"
             android:fontFamily="@font/actor"
             android:text="@string/noteContent"
             android:textAlignment="viewStart"
             android:textAllCaps="false"
             android:textColor="@color/secondaryText"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteHeader"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            android:textSize="15sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
