@@ -27,9 +27,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener{
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -39,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
     ToggleButton toggleView;
     RecyclerView recyclerView;
     FirebaseFirestore firestore;
-    FirestoreRecyclerAdapter<Note, ViewHolder> recyclerViewAdapter;
+    public static FirestoreRecyclerAdapter<Note, ViewHolder> recyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

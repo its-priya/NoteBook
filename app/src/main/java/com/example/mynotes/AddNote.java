@@ -33,6 +33,7 @@ public class AddNote extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         firestore= FirebaseFirestore.getInstance();
 
@@ -46,7 +47,7 @@ public class AddNote extends AppCompatActivity {
             public void onClick(View view) {
                 String titleVal= addNoteTitle.getText().toString();
                 String contentVal= addNoteContent.getText().toString();
-                if(titleVal.isEmpty() && contentVal.isEmpty()) {
+                if(titleVal.trim().isEmpty() && contentVal.trim().isEmpty()) {
                     onBackPressed();
                 }
 

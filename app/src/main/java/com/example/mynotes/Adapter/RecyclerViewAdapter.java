@@ -9,13 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mynotes.MainActivity;
 import com.example.mynotes.Model.Note;
 import com.example.mynotes.NoteDetails;
 import com.example.mynotes.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder>{
+public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder> {
     FirestoreRecyclerOptions<Note> allNotes;
     public RecyclerViewAdapter(@NonNull FirestoreRecyclerOptions<Note> allNotes) {
         super(allNotes);
@@ -35,13 +36,14 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
             holder.noteContent.setVisibility(View.VISIBLE);
             holder.noteContent.setText(note.getContent());
         }
-
+        final String noteId= MainActivity.recyclerViewAdapter.getSnapshots().getSnapshot(position).getId();
         holder.noteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent noteDetailsIntent= new Intent(view.getContext(), NoteDetails.class);
                 noteDetailsIntent.putExtra("title", note.getTitle());
                 noteDetailsIntent.putExtra("content", note.getContent());
+                noteDetailsIntent.putExtra("noteId", noteId);
                 view.getContext().startActivity(noteDetailsIntent);
             }
         });
