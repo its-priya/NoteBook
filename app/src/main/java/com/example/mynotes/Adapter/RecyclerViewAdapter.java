@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mynotes.MainActivity;
 import com.example.mynotes.Model.Note;
-import com.example.mynotes.NoteDetails;
+import com.example.mynotes.Notes.NoteDetails;
 import com.example.mynotes.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;

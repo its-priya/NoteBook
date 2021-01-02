@@ -1,8 +1,10 @@
-package com.example.mynotes;
+package com.example.mynotes.Notes;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.mynotes.MainActivity;
+import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,7 +51,10 @@ public class NoteDetails extends AppCompatActivity {
         curNoteId= noteData.getStringExtra("noteId");
         noteDetailsTitle.setText(curTitle);
         noteDetailsContent.setText(curContent);
-        docRef = fStore.collection("notes").document(curNoteId);
+        docRef = fStore.collection("notes")
+                .document(MainActivity.fUser.getUid())
+                .collection("myNotes")
+                .document(curNoteId);
 
         FloatingActionButton fab = findViewById(R.id.updateNoteFab);
         fab.setOnClickListener(new View.OnClickListener() {
