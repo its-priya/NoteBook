@@ -24,6 +24,7 @@ import android.widget.ToggleButton;
 
 import com.example.mynotes.Adapter.RecyclerViewAdapter;
 import com.example.mynotes.Adapter.RecyclerViewAdapter.ViewHolder;
+import com.example.mynotes.Auth.Login;
 import com.example.mynotes.Auth.SyncAccount;
 import com.example.mynotes.Model.Note;
 import com.example.mynotes.Notes.AddNote;
@@ -124,7 +125,13 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
             case R.id.addNote:
                 startActivity(new Intent(MainActivity.this, AddNote.class));
                 break;
-
+            case R.id.sync:
+                if(fUser.isAnonymous()){
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                }else{
+                    Toast.makeText(getApplicationContext(),"Your notes are Synced.", Toast.LENGTH_SHORT).show();
+                }
+                break;
             case R.id.logout:
                 checkUser();
                 break;
@@ -138,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         }
         else {
             fAuth.signOut();
-            startActivity(new Intent(getApplicationContext(), SyncAccount.class));
+            startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
     }
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
                 .setPositiveButton(R.string.syncNote, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(getApplicationContext(), SyncAccount.class));
+                        startActivity(new Intent(getApplicationContext(), Login.class));
                         finish();
                     }
                 })
@@ -166,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
                                 fUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        startActivity(new Intent(getApplicationContext(), SyncAccount.class));
+                                        startActivity(new Intent(getApplicationContext(), Login.class));
                                         finish();
                                     }
                                 });

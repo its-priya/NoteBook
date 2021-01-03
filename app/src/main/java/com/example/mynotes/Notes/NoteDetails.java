@@ -7,7 +7,6 @@ import com.example.mynotes.MainActivity;
 import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -18,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +27,7 @@ public class NoteDetails extends AppCompatActivity {
     TextView noteDetailsContent, noteDetailsTitle;
     FirebaseFirestore fStore;
     public static DocumentReference docRef;
-    String curNoteId;
+    String curNoteId, curTitle, curContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +44,8 @@ public class NoteDetails extends AppCompatActivity {
         fStore= FirebaseFirestore.getInstance();
 
         final Intent noteData= getIntent();
-        final String curTitle= noteData.getStringExtra("title");
-        final String curContent= noteData.getStringExtra("content");
+        curTitle= noteData.getStringExtra("title");
+        curContent= noteData.getStringExtra("content");
         curNoteId= noteData.getStringExtra("noteId");
         noteDetailsTitle.setText(curTitle);
         noteDetailsContent.setText(curContent);
@@ -55,42 +53,12 @@ public class NoteDetails extends AppCompatActivity {
                 .document(MainActivity.fUser.getUid())
                 .collection("myNotes")
                 .document(curNoteId);
-
-        FloatingActionButton fab = findViewById(R.id.updateNoteFab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newTitle= noteDetailsTitle.getText().toString();
-                String newContent= noteDetailsContent.getText().toString();
-
-                if(curTitle.equals(newTitle)
-                        && curContent.equals(newContent))
-                    onBackPressed();
-                else if(newTitle.trim().isEmpty() && newContent.trim().isEmpty()){
-                    //delete the note.
-                    deleteNote();
-                }
-                else {
-                    Map<String, Object> note= new HashMap<>();
-                    note.put("title",newTitle);
-                    note.put("content", newContent);
-                    docRef.update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            onBackPressed();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Error! Try again.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-            }
-        });
     }
-
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(NoteDetails.this, MainActivity.class));
+        finish();
+    }
     protected void deleteNote() {
         docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -104,7 +72,34 @@ public class NoteDetails extends AppCompatActivity {
             }
         });
     }
+    protected void updateNoteFun(){
+        String newTitle= noteDetailsTitle.getText().toString();
+        String newContent= noteDetailsContent.getText().toString();
 
+        if(curTitle.equals(newTitle)
+                && curContent.equals(newContent))
+            onBackPressed();
+        else if(newTitle.trim().isEmpty() && newContent.trim().isEmpty()){
+            //delete the note.
+            deleteNote();
+        }
+        else {
+            Map<String, Object> note= new HashMap<>();
+            note.put("title",newTitle);
+            note.put("content", newContent);
+            docRef.update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    onBackPressed();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error! Try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.notes_options, menu);
@@ -119,6 +114,9 @@ public class NoteDetails extends AppCompatActivity {
                 break;
             case R.id.deleteBtn:
                 deleteNote();
+                break;
+            case R.id.updateNote:
+                updateNoteFun();
                 break;
             default:
                 return super.onOptionsItemSelected(item);

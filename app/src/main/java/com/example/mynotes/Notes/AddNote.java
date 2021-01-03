@@ -1,5 +1,6 @@
 package com.example.mynotes.Notes;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.mynotes.MainActivity;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ public class AddNote extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private EditText addNoteTitle, addNoteContent;
     private ProgressBar progressBar;
+    private ImageButton saveNote;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +43,11 @@ public class AddNote extends AppCompatActivity {
 
         addNoteTitle= findViewById(R.id.addNoteTitle);
         addNoteContent= findViewById(R.id.addNoteContent);
+        saveNote= findViewById(R.id.saveNote);
         progressBar= findViewById(R.id.progressAddNote);
+        progressBar.setVisibility(View.GONE);
 
-        FloatingActionButton saveNoteFab = findViewById(R.id.saveNoteFab);
-        saveNoteFab.setOnClickListener(new View.OnClickListener() {
+        saveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String titleVal= addNoteTitle.getText().toString();
@@ -78,10 +82,17 @@ public class AddNote extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        startActivity(new Intent(AddNote.this, MainActivity.class));
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
                 onBackPressed();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

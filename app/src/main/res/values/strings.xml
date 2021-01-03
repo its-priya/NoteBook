@@ -21,5 +21,11 @@
     <string name="password">Password</string>
     <string name="confirmPass">Confirm Password</string>
     <string name="retry">Retry</string>
+    <string name="delete">Delete</string>
+    <string name="signUpHere">Don\'t have account? SignUp here.</string>
+    <string name="loginHere">Already have an account? Login here.</string>
+    <string name="passError">Password did not match !</string>
+    <string name="syncError">Sync failed! Try again..</string>
+    <string name="syncSuccess">Synced successfully !</string>
     <string name="title_activity_add_note">AddNote</string>
 </resources>

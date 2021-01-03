@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.mynotes.Auth.SyncAccount;
+import com.example.mynotes.Auth.Login;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Splash extends AppCompatActivity {
@@ -24,11 +24,9 @@ public class Splash extends AppCompatActivity {
             public void run() {
                 if (fAuth.getCurrentUser() != null){
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
                 }
                 else {
-                    startActivity(new Intent(getApplicationContext(), SyncAccount.class));
-                    finish();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
                 }
             }
         }, 1500);
