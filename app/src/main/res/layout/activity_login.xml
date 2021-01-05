@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBkg"
+    android:background="@color/colorCard"
     tools:context=".Auth.Login">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -69,6 +69,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             app:passwordToggleDrawable="@drawable/visibilty_selector"
+            app:passwordToggleTint="@color/colorPeach"
             app:passwordToggleEnabled="true">
 
             <EditText

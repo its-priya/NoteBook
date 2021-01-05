@@ -35,9 +35,24 @@
         android:hint="@string/noteContent"
         android:textSize="18sp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/quickActionBar"
         app:layout_constraintEnd_toEndOf="@+id/noteDetailsTitle"
         app:layout_constraintStart_toStartOf="@+id/noteDetailsTitle"
         app:layout_constraintTop_toBottomOf="@+id/noteDetailsTitle" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/quickActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bottom_bar_bkg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/noteDetailsContent">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_arrow_up"/>
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

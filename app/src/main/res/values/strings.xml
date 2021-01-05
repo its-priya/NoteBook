@@ -5,12 +5,14 @@
     <string name="emailId">Email</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="guest">Guest User</string>
     <string name="searchHint">Search your notes</string>
     <string name="noteTitle">Title</string>
     <string name="noteContent">Note</string>
     <string name="title_activity_note_details">NoteDetails</string>
     <string name="alertTitle">"Are you sure?"</string>
-    <string name="alertMsg">"Logging out will delete all your notes."</string>
+    <string name="alertMsg">"Logging out will delete all your existing notes."</string>
+    <string name="alertMsgOnSync">This will delete your Account including all data related to this account.</string>
     <string name="syncNote">"Sync Note"</string>
     <string name="syncNow">Sync Now</string>
     <string name="logout">Logout</string>
@@ -27,5 +29,6 @@
     <string name="passError">Password did not match !</string>
     <string name="syncError">Sync failed! Try again..</string>
     <string name="syncSuccess">Synced successfully !</string>
+    <string name="ok">It\'s Okay</string>
     <string name="title_activity_add_note">AddNote</string>
 </resources>

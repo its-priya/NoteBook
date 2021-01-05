@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBkg"
+    android:background="@color/colorCard"
     android:orientation="vertical"
     tools:context=".Auth.SignUp">
     <com.google.android.material.appbar.AppBarLayout
@@ -69,7 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:textColorHint="@color/colorPeach">
+            android:textColorHint="@color/colorPeach"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
             <EditText
                 android:id="@+id/userEmailId"
@@ -90,6 +91,7 @@
             android:background="@android:color/transparent"
             android:textColorHint="@color/colorPeach"
             app:passwordToggleDrawable="@drawable/visibilty_selector"
+            app:passwordToggleTint="@color/colorPeach"
             app:passwordToggleEnabled="true">
 
             <EditText
@@ -112,6 +114,7 @@
             android:textColorHint="@color/colorPeach"
             app:errorTextColor="@color/colorAccent"
             app:passwordToggleDrawable="@drawable/visibilty_selector"
+            app:passwordToggleTint="@color/colorPeach"
             app:passwordToggleEnabled="true">
 
             <EditText

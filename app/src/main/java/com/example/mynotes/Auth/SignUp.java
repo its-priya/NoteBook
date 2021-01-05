@@ -26,6 +26,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SignUp extends AppCompatActivity {
     EditText userName, userEmailId, userPassword, userConfirmPass;
@@ -34,6 +35,7 @@ public class SignUp extends AppCompatActivity {
     TextView loginHere;
     TextInputLayout confirmPassLayout;
     ProgressBar progressSignUp;
+    FirebaseAuth fAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +44,18 @@ public class SignUp extends AppCompatActivity {
         Toolbar toolbarLogin = findViewById(R.id.toolbarSignUp);
         setSupportActionBar(toolbarLogin);
         getSupportActionBar().setTitle(R.string.app_name);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        fAuth= FirebaseAuth.getInstance();
+        if(fAuth.getCurrentUser()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
         userName= findViewById(R.id.userName);
         userEmailId= findViewById(R.id.userEmailId);
         userPassword= findViewById(R.id.password);
         userConfirmPass= findViewById(R.id.passwordConfirm);
-        confirmPassLayout= (TextInputLayout)findViewById(R.id.confirmPassLayout);
+        confirmPassLayout= findViewById(R.id.confirmPassLayout);
         loginHere= findViewById(R.id.loginPage);
         progressSignUp= findViewById(R.id.progressSignUp);
         progressSignUp.setVisibility(View.GONE);
@@ -116,11 +123,15 @@ public class SignUp extends AppCompatActivity {
                 confirmPassLayout.setError("");
                 progressSignUp.setVisibility(View.VISIBLE);
                 AuthCredential userCredential= EmailAuthProvider.getCredential(userEmailIdVal, userPasswordVal);
-                FirebaseAuth.getInstance().getCurrentUser()
+                fAuth.getCurrentUser()
                         .linkWithCredential(userCredential)
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+                                UserProfileChangeRequest request= new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(userNameVal)
+                                        .build();
+
                                 progressSignUp.setVisibility(View.GONE);
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -128,7 +139,7 @@ public class SignUp extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), R.string.syncSuccess, Toast.LENGTH_SHORT).show();
                                     }
                                 }, 1000);
-                                goBackToMain();
+                                startActivity(new Intent(SignUp.this, Login.class));
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
