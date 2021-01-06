@@ -20,15 +20,24 @@ import android.widget.Toast;
 
 import com.example.mynotes.MainActivity;
 import com.example.mynotes.R;
+import com.google.android.gms.common.api.Batch;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.firestore.model.Document;
+import com.squareup.okhttp.internal.DiskLruCache;
+
+import java.util.List;
 
 public class Login extends AppCompatActivity {
     Button createTempAccount;
@@ -38,6 +47,7 @@ public class Login extends AppCompatActivity {
     FirebaseAuth fAuth;
     String anonymUserId;
     FirebaseFirestore fStore;
+    FirebaseUser fUser;
     ProgressBar progressLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +59,9 @@ public class Login extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.app_name);
 
         fAuth= FirebaseAuth.getInstance();
-        if(fAuth.getCurrentUser()!=null)
-            anonymUserId= fAuth.getCurrentUser().getUid();
+        fUser= fAuth.getCurrentUser();
+        if(fUser!=null)
+            anonymUserId= fUser.getUid();
         createTempAccount= findViewById(R.id.createTempAccount);
         userEmail= findViewById(R.id.userEmail);
         userPassword= findViewById(R.id.userPassword);
@@ -62,7 +73,7 @@ public class Login extends AppCompatActivity {
         signUpHere= findViewById(R.id.signUpPage);
 
         createTempAccount.setVisibility(View.GONE);
-        if(fAuth.getCurrentUser()!=null) {
+        if(fUser!=null) {
             createTempAccount.setVisibility(View.GONE);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -125,28 +136,9 @@ public class Login extends AppCompatActivity {
                 final String curPassword= userPassword.getText().toString().trim();
                 if (MainActivity.syncWithExistingAcc) {
                     // Sync with existing Account Code.
-                    Toast.makeText(getApplicationContext(), "Syncing", Toast.LENGTH_SHORT).show();
+                    syncWithExistingAccount();
                 } else {
-                    fAuth.signInWithEmailAndPassword(curEmail, curPassword)
-                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    progressLogin.setVisibility(View.GONE);
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), R.string.syncSuccess, Toast.LENGTH_SHORT).show();
-                                        }
-                                    }, 1000);
-                                    goBackToMain();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressLogin.setVisibility(View.GONE);
-                            Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    login(curEmail, curPassword);
                 }
             }
         });
@@ -157,6 +149,36 @@ public class Login extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    private void login(String accEmail, String accPassword){
+        fAuth.signInWithEmailAndPassword(accEmail, accPassword)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        progressLogin.setVisibility(View.GONE);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), R.string.syncSuccess, Toast.LENGTH_SHORT).show();
+                            }
+                        }, 1000);
+                        goBackToMain();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressLogin.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void syncWithExistingAccount() {
+        Toast.makeText(getApplicationContext(), "Syncing", Toast.LENGTH_SHORT).show();
+    }
+
+    private void onFailureLinking(Exception e){
+        progressLogin.setVisibility(View.GONE);
+        Toast.makeText(Login.this, "Error " + e.getMessage(), Toast.LENGTH_SHORT).show();
     }
     public void goBackToMain(){
         startActivity(new Intent(Login.this, MainActivity.class));

@@ -122,32 +122,59 @@ public class SignUp extends AppCompatActivity {
                 }
                 confirmPassLayout.setError("");
                 progressSignUp.setVisibility(View.VISIBLE);
-                AuthCredential userCredential= EmailAuthProvider.getCredential(userEmailIdVal, userPasswordVal);
-                fAuth.getCurrentUser()
-                        .linkWithCredential(userCredential)
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                UserProfileChangeRequest request= new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(userNameVal)
-                                        .build();
 
-                                progressSignUp.setVisibility(View.GONE);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getApplicationContext(), R.string.syncSuccess, Toast.LENGTH_SHORT).show();
-                                    }
-                                }, 1000);
-                                startActivity(new Intent(SignUp.this, Login.class));
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
+                if(fAuth.getCurrentUser()==null){
+                    createNewAccount();
+                }else{
+                    linkAnonymousAccount();
+                }
+            }
+        });
+    }
+
+    private void linkAnonymousAccount() {
+        AuthCredential userCredential= EmailAuthProvider.getCredential(userEmailIdVal, userPasswordVal);
+        fAuth.getCurrentUser()
+                .linkWithCredential(userCredential)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressSignUp.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+                    public void onSuccess(AuthResult authResult) {
+                        accountSuccess(String.valueOf(R.string.syncSuccess));
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressSignUp.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void accountSuccess(final String successMsg){
+        new UserProfileChangeRequest.Builder()
+                .setDisplayName(userNameVal)
+                .build();
+
+        progressSignUp.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), successMsg, Toast.LENGTH_SHORT).show();
+            }
+        }, 1000);
+        startActivity(new Intent(SignUp.this, Login.class));
+    }
+    public void createNewAccount(){
+        fAuth.createUserWithEmailAndPassword(userEmailIdVal, userPasswordVal)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        accountSuccess(String.valueOf(R.string.newAccountSuccess));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressSignUp.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
             }
         });
     }

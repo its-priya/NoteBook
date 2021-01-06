@@ -12,6 +12,7 @@
     <string name="title_activity_note_details">NoteDetails</string>
     <string name="alertTitle">"Are you sure?"</string>
     <string name="alertMsg">"Logging out will delete all your existing notes."</string>
+    <string name="newAccountSuccess">Account created successfully ! Login to continue..</string>
     <string name="alertMsgOnSync">This will delete your Account including all data related to this account.</string>
     <string name="syncNote">"Sync Note"</string>
     <string name="syncNow">Sync Now</string>
