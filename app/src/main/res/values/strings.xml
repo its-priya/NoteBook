@@ -28,6 +28,7 @@
     <string name="signUpHere">Don\'t have account? SignUp here.</string>
     <string name="loginHere">Already have an account? Login here.</string>
     <string name="passError">Password did not match !</string>
+    <string name="passLengthError">Password should be atleast 6 characters !</string>
     <string name="syncError">Sync failed! Try again..</string>
     <string name="syncSuccess">Synced successfully !</string>
     <string name="ok">It\'s Okay</string>

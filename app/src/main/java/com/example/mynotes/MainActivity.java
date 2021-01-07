@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ProgressBar progressBar;
     RecyclerView recyclerView;
     public static boolean syncWithExistingAcc;
+    public static boolean isAccountActive;
     FirebaseFirestore firestore;
     FirebaseAuth fAuth;
     public static FirebaseUser fUser;
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressBar = findViewById(R.id.progressLogout);
         progressBar.setVisibility(View.GONE);
         syncWithExistingAcc = false;
+        isAccountActive= true;
         //Navigation Drawer
         setSupportActionBar(toolbar);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             displayName.setText(R.string.guest);
             displayEmail.setVisibility(View.INVISIBLE);
         } else {
+            displayName.setVisibility(View.VISIBLE);
             displayName.setText(fUser.getDisplayName());
             displayEmail.setText(fUser.getEmail());
         }
@@ -192,9 +196,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fUser.isAnonymous()) {
             displayAlert();
         } else {
-            fAuth.signOut();
-            startActivity(new Intent(getApplicationContext(), Login.class));
-            finish();
+            progressBar.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    fAuth.signOut();
+                    isAccountActive= false;
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+            }, 500);
         }
     }
 
@@ -206,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         syncWithExistingAcc = true;
+                        isAccountActive= false;
                         startActivity(new Intent(getApplicationContext(), Login.class));
                         finish();
                     }
@@ -245,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 fUser.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        isAccountActive= false;
                                         startActivity(new Intent(getApplicationContext(), Login.class));
                                         finish();
                                     }

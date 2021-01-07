@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noteDetailsLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorBkg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Notes.NoteDetails"
     android:isScrollContainer="true"
-    android:scrollbars="vertical">
+    android:scrollbars="vertical"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBkg"
+        android:background="@android:color/transparent"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -25,4 +28,4 @@
 
     <include layout="@layout/content_note_details" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

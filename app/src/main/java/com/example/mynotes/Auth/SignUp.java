@@ -33,7 +33,7 @@ public class SignUp extends AppCompatActivity {
     String userNameVal, userEmailIdVal, userPasswordVal, userConfirmPassVal;
     Button sync;
     TextView loginHere;
-    TextInputLayout confirmPassLayout;
+    TextInputLayout confirmPassLayout, passLayout;
     ProgressBar progressSignUp;
     FirebaseAuth fAuth;
     @Override
@@ -56,6 +56,7 @@ public class SignUp extends AppCompatActivity {
         userPassword= findViewById(R.id.password);
         userConfirmPass= findViewById(R.id.passwordConfirm);
         confirmPassLayout= findViewById(R.id.confirmPassLayout);
+        passLayout= findViewById(R.id.passLayout);
         loginHere= findViewById(R.id.loginPage);
         progressSignUp= findViewById(R.id.progressSignUp);
         progressSignUp.setVisibility(View.GONE);
@@ -116,6 +117,10 @@ public class SignUp extends AppCompatActivity {
                 userPasswordVal= userPassword.getText().toString().trim();
                 userConfirmPassVal= userConfirmPass.getText().toString().trim();
 
+                if(userPasswordVal.length()<6){
+                    passLayout.setError(getText(R.string.passLengthError));
+                    return;
+                }
                 if(!userPasswordVal.equals(userConfirmPassVal)){
                     confirmPassLayout.setError(getText(R.string.passError));
                     return;
@@ -139,7 +144,7 @@ public class SignUp extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        accountSuccess(String.valueOf(R.string.syncSuccess));
+                        accountSuccess(R.string.syncSuccess);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -149,16 +154,15 @@ public class SignUp extends AppCompatActivity {
             }
         });
     }
-    private void accountSuccess(final String successMsg){
+    private void accountSuccess(final int successMsg){
         new UserProfileChangeRequest.Builder()
                 .setDisplayName(userNameVal)
                 .build();
-
         progressSignUp.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), successMsg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getText(successMsg), Toast.LENGTH_SHORT).show();
             }
         }, 1000);
         startActivity(new Intent(SignUp.this, Login.class));
@@ -168,13 +172,14 @@ public class SignUp extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        accountSuccess(String.valueOf(R.string.newAccountSuccess));
+                        accountSuccess(R.string.newAccountSuccess);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 progressSignUp.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e+"", Toast.LENGTH_LONG).show();
             }
         });
     }

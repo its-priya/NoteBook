@@ -12,14 +12,10 @@
     <color name="menuBkg">#212121</color>
     <color name="divider">#404040</color>
 
-    <color name="Fern">#4F7942</color>
-    <color name="Space">#1D2951</color>
-    <color name="Uniform">#444C38</color>
-    <color name="Yellow">#F4B400</color>
-    <color name="Red">#DB4437</color>
-    <color name="Green">#0F9D58</color>
-    <color name="lightGrey">#E0E0E0</color>
-    <color name="lightBlue">#9EDFFF</color>
-    <color name="lightPink">#FFAEDF</color>
+    <color name="noteColor1">#4F7942</color>
+    <color name="noteColor2">#2F575D</color>
+    <color name="noteColor3">#534666</color>
+    <color name="noteColor4">#5A6868</color>
+    <color name="noteColor5">#653060</color>
 
 </resources>

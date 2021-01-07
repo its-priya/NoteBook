@@ -1,6 +1,8 @@
 package com.example.mynotes.Adapter;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder> {
     FirestoreRecyclerOptions<Note> allNotes;
+
     public RecyclerViewAdapter(@NonNull FirestoreRecyclerOptions<Note> allNotes) {
         super(allNotes);
         this.allNotes= allNotes;
@@ -36,6 +39,12 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
             holder.noteContent.setVisibility(View.VISIBLE);
             holder.noteContent.setText(note.getContent());
         }
+        if(!note.getBkgColor().isEmpty()) {
+            GradientDrawable gradientDrawable = (GradientDrawable) holder.noteView.getBackground().mutate();
+            gradientDrawable.setColor(Color.parseColor(note.getBkgColor()));
+            if (!note.getBkgColor().equals("#181818"))
+                gradientDrawable.setStroke(1, Color.parseColor(note.getBkgColor()));
+        }
         final String noteId= MainActivity.recyclerViewAdapter.getSnapshots().getSnapshot(position).getId();
         holder.noteView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +52,7 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
                 Intent noteDetailsIntent= new Intent(view.getContext(), NoteDetails.class);
                 noteDetailsIntent.putExtra("title", note.getTitle());
                 noteDetailsIntent.putExtra("content", note.getContent());
+                noteDetailsIntent.putExtra("bkgColor", note.getBkgColor());
                 noteDetailsIntent.putExtra("noteId", noteId);
                 view.getContext().startActivity(noteDetailsIntent);
             }
@@ -60,12 +70,10 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView noteTitle, noteContent;
         View noteView;
-        //ConstraintLayout noteLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             noteTitle= itemView.findViewById(R.id.noteTitle);
             noteContent= itemView.findViewById(R.id.noteContent);
-            //noteLayout= itemView.findViewById(R.id.noteLayout);
             noteView= itemView;
         }
     }

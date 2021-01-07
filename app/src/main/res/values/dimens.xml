@@ -1,3 +1,10 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="dimen_3sdp">3.00dp</dimen>
+    <dimen name="dimen_0sdp">0.00dp</dimen>
+    <dimen name="dimen_2sdp">2.00dp</dimen>
+    <dimen name="dimen_6sdp">6.00dp</dimen>
+    <dimen name="dimen_35sdp">35.00dp</dimen>
+    <dimen name="dimen_10sdp">10.00dp</dimen>
+    <dimen name="dimen_40sdp">40.00dp</dimen>
 </resources>
