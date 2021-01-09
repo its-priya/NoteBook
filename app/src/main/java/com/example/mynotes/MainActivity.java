@@ -27,6 +27,7 @@ import android.widget.ToggleButton;
 import com.example.mynotes.Adapter.RecyclerViewAdapter;
 import com.example.mynotes.Adapter.RecyclerViewAdapter.ViewHolder;
 import com.example.mynotes.Auth.Login;
+import com.example.mynotes.Auth.SignUp;
 import com.example.mynotes.Model.Note;
 import com.example.mynotes.Notes.AddNote;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ToggleButton toggleView;
     ProgressBar progressBar;
     RecyclerView recyclerView;
-    public static boolean syncWithExistingAcc;
     public static boolean isAccountActive;
     FirebaseFirestore firestore;
     FirebaseAuth fAuth;
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggleView = findViewById(R.id.toggleView);
         progressBar = findViewById(R.id.progressLogout);
         progressBar.setVisibility(View.GONE);
-        syncWithExistingAcc = false;
         isAccountActive= true;
         //Navigation Drawer
         setSupportActionBar(toolbar);
@@ -182,8 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton(R.string.syncNote, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        syncWithExistingAcc = true;
-                        startActivity(new Intent(getApplicationContext(), Login.class));
+                        startActivity(new Intent(getApplicationContext(), SignUp.class));
                         finish();
                     }
                 })
@@ -229,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton(R.string.syncNote, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        syncWithExistingAcc = true;
                         isAccountActive= false;
                         startActivity(new Intent(getApplicationContext(), Login.class));
                         finish();

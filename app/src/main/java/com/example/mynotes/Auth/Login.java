@@ -25,21 +25,10 @@ import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
-
-import java.util.List;
 
 public class Login extends AppCompatActivity {
     Button createTempAccount;
@@ -49,7 +38,6 @@ public class Login extends AppCompatActivity {
     Button syncL;
     FirebaseAuth fAuth;
     String anonymUserId;
-    FirebaseFirestore fStore;
     FirebaseUser fUser;
     ProgressBar progressLogin;
     String APP_TAG= "appTag";
@@ -146,9 +134,10 @@ public class Login extends AppCompatActivity {
                     return;
                 }
                 progressLogin.setVisibility(View.VISIBLE);
-                if (MainActivity.syncWithExistingAcc) {
-                    // Sync with existing Account Code.
-                    syncWithExistingAccount(curEmail, curPassword);
+                if (fAuth.getCurrentUser().isAnonymous()) {
+                    // Sync by creating new Account.
+                    startActivity(new Intent(Login.this, SignUp.class));
+                    finish();
                 } else {
                     login(curEmail, curPassword);
                 }
@@ -197,16 +186,6 @@ public class Login extends AppCompatActivity {
 
     public static boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    }
-
-    private void syncWithExistingAccount(final String accEmail, final String accPassword){
-        progressLogin.setVisibility(View.GONE);
-        Toast.makeText(Login.this, "Syncing..", Toast.LENGTH_SHORT).show();
-    }
-
-    private void onFailureLinking(Exception e){
-        progressLogin.setVisibility(View.GONE);
-        Toast.makeText(Login.this, "Error " + e.getMessage(), Toast.LENGTH_SHORT).show();
     }
     public void goBackToMain(){
         startActivity(new Intent(Login.this, MainActivity.class));

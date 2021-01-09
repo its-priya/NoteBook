@@ -27,17 +27,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthEmailException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-
-import java.util.Properties;
-
-import io.opencensus.tags.Tag;
 
 public class SignUp extends AppCompatActivity {
     EditText userName, userEmailId, userPassword, userConfirmPass;
@@ -74,6 +66,10 @@ public class SignUp extends AppCompatActivity {
         progressSignUp= findViewById(R.id.progressSignUp);
         progressSignUp.setVisibility(View.GONE);
 
+        if(fAuth.getCurrentUser()!=null && fAuth.getCurrentUser().isAnonymous())
+            loginHere.setVisibility(View.INVISIBLE);
+        else
+            loginHere.setVisibility(View.VISIBLE);
         loginHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,6 +170,8 @@ public class SignUp extends AppCompatActivity {
         new UserProfileChangeRequest.Builder()
                 .setDisplayName(userNameVal)
                 .build();
+        fAuth.updateCurrentUser(fAuth.getCurrentUser());
+        MainActivity.isAccountActive= false;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
