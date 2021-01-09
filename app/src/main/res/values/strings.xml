@@ -29,6 +29,11 @@
     <string name="loginHere">Already have an account? Login here.</string>
     <string name="passError">Password did not match !</string>
     <string name="passLengthError">Password should be atleast 6 characters !</string>
+    <string name="emailLinkSent">Verification Email has been sent.</string>
+    <string name="credentialError">Invalid login credentials.</string>
+    <string name="emailExistError">Email doesn\'t exist.</string>
+    <string name="emailInvalidError">Email address is invalid.</string>
+    <string name="emailDuplicateError">Account already exists with the given email address.</string>
     <string name="syncError">Sync failed! Try again..</string>
     <string name="syncSuccess">Synced successfully !</string>
     <string name="ok">It\'s Okay</string>

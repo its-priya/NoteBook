@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,16 +27,27 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
+import java.util.Properties;
+
+import io.opencensus.tags.Tag;
 
 public class SignUp extends AppCompatActivity {
     EditText userName, userEmailId, userPassword, userConfirmPass;
     String userNameVal, userEmailIdVal, userPasswordVal, userConfirmPassVal;
     Button sync;
     TextView loginHere;
-    TextInputLayout confirmPassLayout, passLayout;
+    TextInputLayout confirmPassLayout, passLayout, emailLayout;
     ProgressBar progressSignUp;
     FirebaseAuth fAuth;
+    String APP_TAG= "appTag";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +57,7 @@ public class SignUp extends AppCompatActivity {
         setSupportActionBar(toolbarLogin);
         getSupportActionBar().setTitle(R.string.app_name);
         fAuth= FirebaseAuth.getInstance();
-        if(fAuth.getCurrentUser()!=null) {
+        if(MainActivity.isAccountActive) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         else {
@@ -57,6 +69,7 @@ public class SignUp extends AppCompatActivity {
         userConfirmPass= findViewById(R.id.passwordConfirm);
         confirmPassLayout= findViewById(R.id.confirmPassLayout);
         passLayout= findViewById(R.id.passLayout);
+        emailLayout= findViewById(R.id.emailLayout);
         loginHere= findViewById(R.id.loginPage);
         progressSignUp= findViewById(R.id.progressSignUp);
         progressSignUp.setVisibility(View.GONE);
@@ -116,16 +129,17 @@ public class SignUp extends AppCompatActivity {
                 userEmailIdVal= userEmailId.getText().toString().trim();
                 userPasswordVal= userPassword.getText().toString().trim();
                 userConfirmPassVal= userConfirmPass.getText().toString().trim();
-
-                if(userPasswordVal.length()<6){
-                    passLayout.setError(getText(R.string.passLengthError));
+                emailLayout.setError("");
+                confirmPassLayout.setError("");
+                if(!Login.isValidEmail(userEmailIdVal)) {
+                    emailLayout.setError(getString(R.string.emailInvalidError));
                     return;
                 }
+
                 if(!userPasswordVal.equals(userConfirmPassVal)){
                     confirmPassLayout.setError(getText(R.string.passError));
                     return;
                 }
-                confirmPassLayout.setError("");
                 progressSignUp.setVisibility(View.VISIBLE);
 
                 if(fAuth.getCurrentUser()==null){
@@ -148,9 +162,11 @@ public class SignUp extends AppCompatActivity {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NonNull Exception exception) {
                 progressSignUp.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+                emailLayout.setError("");
+                passLayout.setError("");
+                onFailureAction(exception);
             }
         });
     }
@@ -158,28 +174,45 @@ public class SignUp extends AppCompatActivity {
         new UserProfileChangeRequest.Builder()
                 .setDisplayName(userNameVal)
                 .build();
-        progressSignUp.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), getText(successMsg), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(successMsg), Toast.LENGTH_SHORT).show();
             }
         }, 1000);
         startActivity(new Intent(SignUp.this, Login.class));
+    }
+    private void onFailureAction(Exception exception){
+        try{
+            throw exception;
+        }
+        catch (FirebaseAuthUserCollisionException e2){
+            emailLayout.setError(getString(R.string.emailDuplicateError));
+        }
+        catch (FirebaseAuthWeakPasswordException e3) {
+            passLayout.setError(getText(R.string.passLengthError));
+        }
+        catch (Exception e){
+            Log.d(APP_TAG, e.getMessage());
+            Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+        }
+        Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
     }
     public void createNewAccount(){
         fAuth.createUserWithEmailAndPassword(userEmailIdVal, userPasswordVal)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        progressSignUp.setVisibility(View.GONE);
                         accountSuccess(R.string.newAccountSuccess);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NonNull Exception exception) {
                 progressSignUp.setVisibility(View.GONE);
-                //Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(), e+"", Toast.LENGTH_LONG).show();
+                emailLayout.setError("");
+                passLayout.setError("");
+                onFailureAction(exception);
             }
         });
     }

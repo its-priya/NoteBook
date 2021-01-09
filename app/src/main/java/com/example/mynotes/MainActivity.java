@@ -107,6 +107,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             displayEmail.setText(fUser.getEmail());
         }
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         FloatingActionButton addNoteFab = findViewById(R.id.addNoteFab);
         addNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override

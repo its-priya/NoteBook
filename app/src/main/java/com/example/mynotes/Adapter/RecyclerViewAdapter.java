@@ -18,7 +18,7 @@ import com.example.mynotes.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, RecyclerViewAdapter.ViewHolder>{
     FirestoreRecyclerOptions<Note> allNotes;
 
     public RecyclerViewAdapter(@NonNull FirestoreRecyclerOptions<Note> allNotes) {

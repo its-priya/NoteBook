@@ -46,6 +46,7 @@
             android:textSize="30sp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/userEmailLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -82,7 +83,17 @@
                 android:textColor="@color/secondaryText"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <TextView
+            android:id="@+id/errorSpace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPeach"
+            android:text="@string/credentialError"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:layout_marginTop="3dp"
+            android:visibility="invisible"/>
         <Button
             android:id="@+id/syncL"
             android:layout_width="wrap_content"

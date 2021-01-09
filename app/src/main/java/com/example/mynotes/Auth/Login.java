@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,21 +24,35 @@ import com.example.mynotes.MainActivity;
 import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
+
+import java.util.List;
 
 public class Login extends AppCompatActivity {
     Button createTempAccount;
-    TextView signUpHere;
+    TextView signUpHere, errorSpace;
     EditText userEmail, userPassword;
+    TextInputLayout userEmailLayout;
     Button syncL;
     FirebaseAuth fAuth;
     String anonymUserId;
     FirebaseFirestore fStore;
     FirebaseUser fUser;
     ProgressBar progressLogin;
+    String APP_TAG= "appTag";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +69,9 @@ public class Login extends AppCompatActivity {
         createTempAccount= findViewById(R.id.createTempAccount);
         userEmail= findViewById(R.id.userEmail);
         userPassword= findViewById(R.id.userPassword);
+        userEmailLayout= findViewById(R.id.userEmailLayout);
         progressLogin= findViewById(R.id.progressLogin);
+        errorSpace= findViewById(R.id.errorSpace);
         progressLogin.setVisibility(View.GONE);
         syncL= findViewById(R.id.syncL);
         syncL.setEnabled(false);
@@ -118,9 +137,15 @@ public class Login extends AppCompatActivity {
         syncL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressLogin.setVisibility(View.VISIBLE);
                 final String curEmail= userEmail.getText().toString().trim();
                 final String curPassword= userPassword.getText().toString().trim();
+                errorSpace.setVisibility(View.INVISIBLE);
+                userEmailLayout.setError("");
+                if(!isValidEmail(curEmail)) {
+                    userEmailLayout.setError(getString(R.string.emailInvalidError));
+                    return;
+                }
+                progressLogin.setVisibility(View.VISIBLE);
                 if (MainActivity.syncWithExistingAcc) {
                     // Sync with existing Account Code.
                     syncWithExistingAccount(curEmail, curPassword);
@@ -137,7 +162,7 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-    private void login(String accEmail, String accPassword){
+    private void login(final String accEmail, String accPassword){
         fAuth.signInWithEmailAndPassword(accEmail, accPassword)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -153,12 +178,27 @@ public class Login extends AppCompatActivity {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(@NonNull Exception exception) {
                 progressLogin.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), R.string.syncError, Toast.LENGTH_SHORT).show();
+                try{
+                    throw exception;
+                }
+                catch(FirebaseAuthInvalidCredentialsException e1){
+                    errorSpace.setVisibility(View.VISIBLE);
+                }
+                catch (Exception e){
+                    progressLogin.setVisibility(View.GONE);
+                    Log.d(APP_TAG, e.getMessage());
+                    Toast.makeText(Login.this, R.string.syncError, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
     private void syncWithExistingAccount(final String accEmail, final String accPassword){
         progressLogin.setVisibility(View.GONE);
         Toast.makeText(Login.this, "Syncing..", Toast.LENGTH_SHORT).show();
