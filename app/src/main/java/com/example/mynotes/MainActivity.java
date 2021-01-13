@@ -16,10 +16,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -105,19 +107,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             displayName.setText(fUser.getDisplayName());
             displayEmail.setText(fUser.getEmail());
         }
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
         FloatingActionButton addNoteFab = findViewById(R.id.addNoteFab);
         addNoteFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,8 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
-
-    @Override
+        @Override
     protected void onStart() {
         super.onStart();
         recyclerViewAdapter.startListening();
@@ -167,11 +155,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(getApplicationContext(), "Your notes are Synced.", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.rateApp:
+                displayRateDialog();
+                break;
             case R.id.logout:
                 checkUser();
                 break;
         }
         return true;
+    }
+
+    private void displayRateDialog() {
+        final View rateView= LayoutInflater.from(this).inflate(R.layout.rate_app, null);
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.rateMsg)
+                .setView(rateView)
+                .setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final RatingBar rateBar= rateView.findViewById(R.id.rateBar);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,
+                                        getString(R.string.thankMsg) + " " + String.valueOf(rateBar.getRating()), Toast.LENGTH_SHORT).show();
+                            }
+                        },100);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     private void displayAlertOnNewLogin() {

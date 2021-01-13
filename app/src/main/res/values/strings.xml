@@ -37,5 +37,8 @@
     <string name="syncError">Sync failed! Try again..</string>
     <string name="syncSuccess">Synced successfully !</string>
     <string name="ok">It\'s Okay</string>
+    <string name="rateMsg">How was your experience with us ?</string>
+    <string name="submit">Submit</string>
+    <string name="thankMsg">Thank you for rating us </string>
     <string name="title_activity_add_note">AddNote</string>
 </resources>

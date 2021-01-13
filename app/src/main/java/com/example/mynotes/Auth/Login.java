@@ -134,7 +134,7 @@ public class Login extends AppCompatActivity {
                     return;
                 }
                 progressLogin.setVisibility(View.VISIBLE);
-                if (fAuth.getCurrentUser().isAnonymous()) {
+                if (fAuth.getCurrentUser()!=null && fAuth.getCurrentUser().isAnonymous()) {
                     // Sync by creating new Account.
                     startActivity(new Intent(Login.this, SignUp.class));
                     finish();
