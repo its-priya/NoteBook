@@ -39,6 +39,12 @@
     <string name="ok">It\'s Okay</string>
     <string name="rateMsg">How was your experience with us ?</string>
     <string name="submit">Submit</string>
+    <string name="noNotesMsg">No notes to display.</string>
+    <string name="link">Add URL</string>
+    <string name="enterHere">Enter here..</string>
+    <string name="add">Add</string>
+    <string name="url">URL</string>
+    <string name="linkError">Enter valid URL.</string>
     <string name="thankMsg">Thank you for rating us </string>
     <string name="title_activity_add_note">AddNote</string>
 </resources>

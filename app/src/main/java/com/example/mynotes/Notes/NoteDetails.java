@@ -9,17 +9,23 @@ import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.text.method.ScrollingMovementMethod;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,10 +35,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NoteDetails extends AppCompatActivity {
-    TextView noteDetailsContent, noteDetailsTitle;
+    EditText noteDetailsContent, noteDetailsTitle;
+    TextView noteDetailsLink;
     FirebaseFirestore fStore;
     public static DocumentReference docRef;
-    String curNoteId, curTitle, curContent, curBkgColor, newBkgColor;
+    String curNoteId, curTitle, curContent, curLink, curBkgColor, newBkgColor;
     LinearLayout noteDetailsLayout;
     ImageView imageColor0, imageColor1, imageColor2, imageColor3, imageColor4, imageColor5;
     @Override
@@ -46,6 +53,7 @@ public class NoteDetails extends AppCompatActivity {
 
         noteDetailsLayout= findViewById(R.id.noteDetailsLayout);
         noteDetailsTitle= findViewById(R.id.noteDetailsTitle);
+        noteDetailsLink= findViewById(R.id.noteDetailsLink);
         noteDetailsContent= findViewById(R.id.noteDetailsContent);
         noteDetailsContent.setMovementMethod(new ScrollingMovementMethod());
 
@@ -56,10 +64,17 @@ public class NoteDetails extends AppCompatActivity {
         curContent= noteData.getStringExtra("content");
         curBkgColor= noteData.getStringExtra("bkgColor");
         curNoteId= noteData.getStringExtra("noteId");
+        curLink= noteData.getStringExtra("link");
         newBkgColor= curBkgColor;
 
         noteDetailsTitle.setText(curTitle);
         noteDetailsContent.setText(curContent);
+        noteDetailsLink.setText(curLink);
+        if(noteDetailsLink.getText().length()==0){
+            noteDetailsLink.setVisibility(View.GONE);
+        }else{
+            noteDetailsLink.setVisibility(View.VISIBLE);
+        }
         noteDetailsLayout.setBackgroundColor(Color.parseColor(curBkgColor));
         docRef = fStore.collection("notes")
                 .document(MainActivity.fUser.getUid())
@@ -90,11 +105,13 @@ public class NoteDetails extends AppCompatActivity {
     protected void updateNoteFun(){
         String newTitle= noteDetailsTitle.getText().toString();
         String newContent= noteDetailsContent.getText().toString();
+        String newLink= noteDetailsLink.getText().toString();
 
         if(curTitle.equals(newTitle)
-                && curContent.equals(newContent) && curBkgColor.equals(newBkgColor))
+                && curContent.equals(newContent) && curBkgColor.equals(newBkgColor)
+                && noteDetailsLink.getVisibility()==View.VISIBLE && curLink.equals(newLink))
             onBackPressed();
-        else if(newTitle.trim().isEmpty() && newContent.trim().isEmpty()){
+        else if(newTitle.trim().isEmpty() && newContent.trim().isEmpty() && noteDetailsLink.getVisibility()==View.GONE){
             //delete the note.
             deleteNote();
         }
@@ -103,10 +120,11 @@ public class NoteDetails extends AppCompatActivity {
             note.put("title",newTitle);
             note.put("content", newContent);
             note.put("bkgColor", newBkgColor);
+            note.put("link", newLink);
             docRef.update(note).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    onBackPressed();
+                    finish();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -132,6 +150,13 @@ public class NoteDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 deleteNote();
+            }
+        });
+        quickOptionsLayout.findViewById(R.id.addLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                showAddLinkDialog();
             }
         });
         imageColor0 = quickOptionsLayout.findViewById(R.id.imageColor0);
@@ -190,6 +215,38 @@ public class NoteDetails extends AppCompatActivity {
             }
         });
     }
+
+    private void showAddLinkDialog() {
+        final View addLinkView= LayoutInflater.from(this).inflate(R.layout.add_link_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setView(addLinkView);
+        final TextInputLayout textLinkLayout= addLinkView.findViewById(R.id.textLinkLayout);
+        final AlertDialog addLinkDialog= builder.create();
+        addLinkView.findViewById(R.id.addLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText textLink= addLinkView.findViewById(R.id.textLink);
+                final String textLinkVal= textLink.getText().toString().trim();
+                if(textLinkVal.isEmpty()){
+
+                }else if(!Patterns.WEB_URL.matcher(textLinkVal).matches()){
+                    textLinkLayout.setError(getText(R.string.linkError));
+                }else {
+                    noteDetailsLink.setText(textLinkVal);
+                    noteDetailsLink.setVisibility(View.VISIBLE);
+                    addLinkDialog.dismiss();
+                }
+            }
+        });
+        addLinkView.findViewById(R.id.cancelLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addLinkDialog.dismiss();
+            }
+        });
+        addLinkDialog.show();
+    }
+
     private void setSelectedColorImage(String curColor){
         if(curColor.equals("#181818")){
             imageColor0.setImageResource(R.drawable.ic_done);

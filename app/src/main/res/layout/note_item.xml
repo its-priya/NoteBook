@@ -32,6 +32,18 @@
             android:textSize="17sp"
             android:textStyle="bold"/>
         <TextView
+            android:id="@+id/noteLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_margin="4dp"
+            android:fontFamily="@font/actor"
+            android:text="@string/noteContent"
+            android:textAlignment="viewStart"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPeach"
+            android:textSize="15sp" />
+        <TextView
             android:id="@+id/noteContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

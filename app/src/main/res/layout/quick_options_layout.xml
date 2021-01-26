@@ -25,8 +25,19 @@
         android:drawableLeft="@drawable/ic_delete"
         android:gravity="start|center_vertical"
         android:drawablePadding="@dimen/dimen_35sdp"
-        android:layout_margin="10dp"/>
-
+        android:layout_margin="5dp"/>
+    <Button
+        android:id="@+id/addLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/link"
+        android:textAllCaps="false"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:drawableLeft="@drawable/ic_link"
+        android:gravity="start|center_vertical"
+        android:drawablePadding="@dimen/dimen_35sdp"
+        android:layout_margin="5dp"/>
     <LinearLayout
         android:id="@+id/noteColorLayout"
         android:layout_width="match_parent"

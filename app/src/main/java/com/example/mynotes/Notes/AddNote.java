@@ -9,13 +9,17 @@ import com.example.mynotes.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -23,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -31,6 +36,7 @@ import java.util.Map;
 public class AddNote extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private EditText addNoteTitle, addNoteContent;
+    private TextView addNoteLink;
     private String addNoteColor;
     private ProgressBar progressBar;
     private ImageButton saveNote;
@@ -51,6 +57,7 @@ public class AddNote extends AppCompatActivity {
         notePageLayout= findViewById(R.id.notePageLayout);
         addNoteTitle= findViewById(R.id.addNoteTitle);
         addNoteContent= findViewById(R.id.addNoteContent);
+        addNoteLink= findViewById(R.id.addNoteLink);
         saveNote= findViewById(R.id.saveNote);
         progressBar= findViewById(R.id.progressAddNote);
         progressBar.setVisibility(View.GONE);
@@ -63,7 +70,9 @@ public class AddNote extends AppCompatActivity {
             public void onClick(View view) {
                 String titleVal= addNoteTitle.getText().toString();
                 String contentVal= addNoteContent.getText().toString();
-                if(titleVal.trim().isEmpty() && contentVal.trim().isEmpty()) {
+                String linkVal= addNoteLink.getText().toString();
+                if(titleVal.trim().isEmpty() && contentVal.trim().isEmpty()
+                        && addNoteLink.getVisibility()==View.GONE) {
                     onBackPressed();
                 }
 
@@ -76,6 +85,7 @@ public class AddNote extends AppCompatActivity {
                 note.put("title", titleVal);
                 note.put("content", contentVal);
                 note.put("bkgColor", selectedNoteColor);
+                note.put("link", linkVal);
 
                 docRef.set(note).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -110,7 +120,13 @@ public class AddNote extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        quickOptionsLayout.findViewById(R.id.addLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                showAddLinkDialog();
+            }
+        });
         imageColor0 = quickOptionsLayout.findViewById(R.id.imageColor0);
         imageColor1 = quickOptionsLayout.findViewById(R.id.imageColor1);
         imageColor2 = quickOptionsLayout.findViewById(R.id.imageColor2);
@@ -196,6 +212,38 @@ public class AddNote extends AppCompatActivity {
             }
         });
     }
+
+    private void showAddLinkDialog() {
+        final View addLinkView= LayoutInflater.from(this).inflate(R.layout.add_link_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setView(addLinkView);
+        final TextInputLayout textLinkLayout= addLinkView.findViewById(R.id.textLinkLayout);
+        final AlertDialog addLinkDialog= builder.create();
+        addLinkView.findViewById(R.id.addLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText textLink= addLinkView.findViewById(R.id.textLink);
+                final String textLinkVal= textLink.getText().toString().trim();
+                if(textLinkVal.isEmpty()){
+
+                }else if(!Patterns.WEB_URL.matcher(textLinkVal).matches()){
+                    textLinkLayout.setError(getText(R.string.linkError));
+                }else {
+                    addNoteLink.setText(textLinkVal);
+                    addNoteLink.setVisibility(View.VISIBLE);
+                    addLinkDialog.dismiss();
+                }
+            }
+        });
+        addLinkView.findViewById(R.id.cancelLink).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addLinkDialog.dismiss();
+            }
+        });
+        addLinkDialog.show();
+    }
+
     private void setNoteBkgColor(){
         notePageLayout.setBackgroundColor(Color.parseColor(selectedNoteColor));
     }

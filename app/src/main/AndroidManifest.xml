@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Auth.SignUp"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" ></activity>
-        <activity android:name=".Auth.Login"
+        <activity
+            android:name=".Auth.SignUp"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".Auth.Login"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".Splash"

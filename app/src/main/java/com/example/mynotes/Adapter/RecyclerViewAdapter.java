@@ -39,6 +39,12 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
             holder.noteContent.setVisibility(View.VISIBLE);
             holder.noteContent.setText(note.getContent());
         }
+        if (note.getLink().isEmpty())
+            holder.noteLink.setVisibility(View.GONE);
+        else{
+            holder.noteLink.setVisibility(View.VISIBLE);
+            holder.noteLink.setText(note.getLink());
+        }
         if(!note.getBkgColor().isEmpty()) {
             GradientDrawable gradientDrawable = (GradientDrawable) holder.noteView.getBackground().mutate();
             gradientDrawable.setColor(Color.parseColor(note.getBkgColor()));
@@ -54,6 +60,7 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
                 noteDetailsIntent.putExtra("content", note.getContent());
                 noteDetailsIntent.putExtra("bkgColor", note.getBkgColor());
                 noteDetailsIntent.putExtra("noteId", noteId);
+                noteDetailsIntent.putExtra("link", note.getLink());
                 view.getContext().startActivity(noteDetailsIntent);
             }
         });
@@ -66,14 +73,14 @@ public class RecyclerViewAdapter extends FirestoreRecyclerAdapter<Note, Recycler
         return new ViewHolder(view);
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView noteTitle, noteContent;
+        TextView noteTitle, noteContent, noteLink;
         View noteView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             noteTitle= itemView.findViewById(R.id.noteTitle);
             noteContent= itemView.findViewById(R.id.noteContent);
+            noteLink= itemView.findViewById(R.id.noteLink);
             noteView= itemView;
         }
     }

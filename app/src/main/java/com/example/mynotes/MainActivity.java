@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseFirestore firestore;
     FirebaseAuth fAuth;
     public static FirebaseUser fUser;
+    FirestoreRecyclerOptions<Note> allNotes;
     public static FirestoreRecyclerAdapter<Note, ViewHolder> recyclerViewAdapter;
 
     @Override
@@ -89,8 +90,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         firestore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
         fUser = fAuth.getCurrentUser();
-        Query query = firestore.collection("notes").document(fUser.getUid()).collection("myNotes");   //Set Query as per User.
-        FirestoreRecyclerOptions<Note> allNotes = new FirestoreRecyclerOptions.Builder<Note>()
+        Query query = firestore.collection("notes").document(fUser.getUid())
+                .collection("myNotes");  //.orderBy("timestamp", Query.Direction.ASCENDING);   //Set Query as per User.
+        allNotes = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query, Note.class)
                 .build();
         recyclerViewAdapter = new RecyclerViewAdapter(allNotes);
@@ -115,6 +117,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchText) {
+                // Search Code.
+                return false;
+            }
+        });
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         toggleView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -127,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
+
         @Override
     protected void onStart() {
         super.onStart();

@@ -6,44 +6,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:scrollbars="vertical"
     android:isScrollContainer="true"
+    android:scrollbars="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <EditText
-        android:id="@+id/noteDetailsTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/noteTitle"
-        android:layout_margin="5dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="16dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/noteDetailsContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="@font/actor"
-        android:gravity="start|top"
-        android:hint="@string/noteContent"
-        android:textSize="18sp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/noteDetailsTitle"
-        app:layout_constraintStart_toStartOf="@+id/noteDetailsTitle"
-        app:layout_constraintTop_toBottomOf="@+id/noteDetailsTitle" />
+        <EditText
+            android:id="@+id/noteDetailsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:gravity="start|top"
+            android:paddingBottom="5dp"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/noteTitle"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/noteDetailsLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            android:fontFamily="@font/actor"
+            android:gravity="start|top"
+            android:padding="5dp"
+            android:textColor="#FFC107"
+            android:textSize="16sp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:layout_constraintEnd_toEndOf="@+id/noteDetailsTitle"
+            app:layout_constraintStart_toStartOf="@+id/noteDetailsTitle"
+            app:layout_constraintTop_toBottomOf="@id/noteDetailsTitle" />
+
+        <EditText
+            android:id="@+id/noteDetailsContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
+            android:fontFamily="@font/actor"
+            android:gravity="start|top"
+            android:paddingTop="5dp"
+            android:hint="@string/noteContent"
+            android:textSize="18sp"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:layout_constraintEnd_toEndOf="@+id/noteDetailsTitle"
+            app:layout_constraintStart_toStartOf="@+id/noteDetailsTitle"
+            app:layout_constraintTop_toBottomOf="@id/noteDetailsLink"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <include layout="@layout/quick_options_layout"/>
+
+    <include layout="@layout/quick_options_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
